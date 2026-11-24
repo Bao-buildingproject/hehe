@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: planner
+          POSTGRES_PASSWORD: planner
+          POSTGRES_DB: planner_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U planner"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://planner:planner@localhost:5432/planner_test
+      TEST_DATABASE_URL: postgres://planner:planner@localhost:5432/planner_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Type check
+        run: npm run typecheck
+      - name: Unit tests (calendar & statistics rules)
+        run: npm test
+      - name: Build (runs database migrations first)
+        run: npm run build
+      - name: Integration tests (PostgreSQL)
+        run: npm run test:integration
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+      - name: End-to-end tests
+        run: npm run test:e2e

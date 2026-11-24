@@ -1,0 +1,29 @@
+// Applies pending SQL migrations from ./drizzle. Runs before `next build`.
+import { drizzle } from "drizzle-orm/postgres-js";
+import { migrate } from "drizzle-orm/postgres-js/migrator";
+import postgres from "postgres";
+
+const url = process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL;
+
+if (!url) {
+  if (process.env.SKIP_DB_MIGRATE === "1") {
+    console.log("[migrate] SKIP_DB_MIGRATE=1 → bỏ qua migration.");
+    process.exit(0);
+  }
+  console.error(
+    "[migrate] Thiếu DATABASE_URL. Hãy kết nối cơ sở dữ liệu PostgreSQL (xem README, mục Triển khai) " +
+      "hoặc đặt SKIP_DB_MIGRATE=1 nếu chỉ muốn build thử.",
+  );
+  process.exit(1);
+}
+
+const client = postgres(url, { max: 1, prepare: false, onnotice: () => {} });
+try {
+  await migrate(drizzle(client), { migrationsFolder: "drizzle" });
+  console.log("[migrate] Cơ sở dữ liệu đã cập nhật.");
+} catch (error) {
+  console.error("[migrate] Lỗi khi chạy migration:", error);
+  process.exitCode = 1;
+} finally {
+  await client.end({ timeout: 5 });
+}

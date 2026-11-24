@@ -1,0 +1,26 @@
+# Gọi máy chủ mỗi 5 phút để gửi nhắc nhở Web Push (khi ứng dụng đã đóng).
+# Cách bật (xem README, mục "Nhắc nhở khi đóng ứng dụng"):
+#   1. Settings → Secrets and variables → Actions → Variables: REMINDERS_URL = https://<tên-miền>/api/cron/reminders
+#   2. Secrets: CRON_SECRET = cùng giá trị với biến CRON_SECRET trên Vercel
+#   3. Bỏ dấu # ở hai dòng "schedule" bên dưới.
+# Lưu ý: GitHub có thể chạy trễ vài phút; cron-job.org (miễn phí) chính xác hơn.
+name: Reminders
+
+on:
+  workflow_dispatch:
+  # schedule:
+  #   - cron: "*/5 * * * *"
+
+permissions: {}
+
+jobs:
+  ping:
+    if: ${{ vars.REMINDERS_URL != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Send due reminders
+        env:
+          URL: ${{ vars.REMINDERS_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: curl --fail --silent --show-error -X POST -H "Authorization: Bearer $CRON_SECRET" "$URL"

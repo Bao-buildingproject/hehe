@@ -1,0 +1,211 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Design tokens. Light and dark values are chosen separately (dark is not an
+ * automatic inversion). Chart colours follow the validated data-viz palette:
+ * accent blue = categorical slot 1, status colours are reserved for task state,
+ * the heatmap uses one blue ramp (light → dark = less → more).
+ */
+:root {
+  color-scheme: light;
+  --bg: #f4f4f1;
+  --surface: #fcfcfb;
+  --surface-2: #f1f0ec;
+  --surface-3: #e7e6e0;
+  --line: rgba(11, 11, 11, 0.09);
+  --line-strong: rgba(11, 11, 11, 0.16);
+  --fg: #0b0b0b;
+  --fg-2: #52514e;
+  --fg-3: #77756f;
+  --accent: #2a78d6;
+  --accent-hover: #256abf;
+  --accent-soft: #e4eefb;
+  --accent-fg: #ffffff;
+  --st-done: #0ca30c;
+  --st-progress: #e8a20b;
+  --st-idle: #9a9891;
+  --st-overdue: #d03b3b;
+  --st-done-soft: rgba(12, 163, 12, 0.1);
+  --st-progress-soft: rgba(250, 178, 25, 0.16);
+  --st-overdue-soft: rgba(208, 59, 59, 0.1);
+  --success-text: #006300;
+  --danger-text: #b42f2f;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --track: #cde2fb;
+  --heat-none: #efeee9;
+  --heat-0: #e1e0d9;
+  --heat-1: #86b6ef;
+  --heat-2: #3987e5;
+  --heat-3: #1c5cab;
+  --heat-4: #0d366b;
+  --heat-ink-1: #0d366b;
+  --heat-ink-2: #ffffff;
+  --heat-ink-3: #ffffff;
+  --heat-ink-4: #ffffff;
+  --shadow-sm: 0 1px 2px rgba(15, 15, 15, 0.05);
+  --shadow-md: 0 1px 2px rgba(15, 15, 15, 0.05), 0 8px 24px rgba(15, 15, 15, 0.06);
+  --shadow-lg: 0 2px 6px rgba(15, 15, 15, 0.06), 0 24px 48px rgba(15, 15, 15, 0.14);
+}
+
+.dark {
+  color-scheme: dark;
+  --bg: #0d0d0d;
+  --surface: #1a1a19;
+  --surface-2: #232321;
+  --surface-3: #2e2e2b;
+  --line: rgba(255, 255, 255, 0.09);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --fg: #f0efec;
+  --fg-2: #c3c2b7;
+  --fg-3: #94928b;
+  --accent: #3987e5;
+  --accent-hover: #5598e7;
+  --accent-soft: rgba(57, 135, 229, 0.18);
+  --accent-fg: #ffffff;
+  --st-done: #0ca30c;
+  --st-progress: #fab219;
+  --st-idle: #77756f;
+  --st-overdue: #e05252;
+  --st-done-soft: rgba(12, 163, 12, 0.18);
+  --st-progress-soft: rgba(250, 178, 25, 0.16);
+  --st-overdue-soft: rgba(224, 82, 82, 0.16);
+  --success-text: #0ca30c;
+  --danger-text: #f07c7c;
+  --grid: #2c2c2a;
+  --axis: #383835;
+  --track: #1d3557;
+  --heat-none: #232321;
+  --heat-0: #2e2e2b;
+  --heat-1: #1c5cab;
+  --heat-2: #2a78d6;
+  --heat-3: #5598e7;
+  --heat-4: #9ec5f4;
+  --heat-ink-1: #ffffff;
+  --heat-ink-2: #ffffff;
+  --heat-ink-3: #0b0b0b;
+  --heat-ink-4: #0b0b0b;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.4), 0 24px 48px rgba(0, 0, 0, 0.55);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-fg: var(--fg);
+  --color-fg-2: var(--fg-2);
+  --color-fg-3: var(--fg-3);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-fg: var(--accent-fg);
+  --color-st-done: var(--st-done);
+  --color-st-progress: var(--st-progress);
+  --color-st-idle: var(--st-idle);
+  --color-st-overdue: var(--st-overdue);
+  --color-st-done-soft: var(--st-done-soft);
+  --color-st-progress-soft: var(--st-progress-soft);
+  --color-st-overdue-soft: var(--st-overdue-soft);
+  --color-success-text: var(--success-text);
+  --color-danger-text: var(--danger-text);
+  --color-track: var(--track);
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial, sans-serif;
+  --shadow-soft: var(--shadow-sm);
+  --shadow-card: var(--shadow-md);
+  --shadow-pop: var(--shadow-lg);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent-soft);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Native date/time pickers follow the theme. */
+input[type="date"],
+input[type="time"] {
+  min-height: 2.5rem;
+}
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 0.6;
+  cursor: pointer;
+}
+.dark input[type="date"]::-webkit-calendar-picker-indicator,
+.dark input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--surface-3) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
