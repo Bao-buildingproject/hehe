@@ -21,10 +21,6 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const router = useRouter();
   const params = useSearchParams();
   const queryClient = useQueryClient();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const signup = mode === "signup";
@@ -42,9 +38,16 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
     };
   }, [router, params]);
 
-  async function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
+    // Uncontrolled inputs: text typed before the page finished loading is kept.
+    const form = new FormData(e.currentTarget);
+    const read = (key: string) => String(form.get(key) ?? "");
+    const name = read("name");
+    const email = read("email");
+    const password = read("password");
+    const confirm = read("confirm");
     const parsed = signup ? signupSchema.safeParse({ name, email, password }) : loginSchema.safeParse({ email, password });
     if (!parsed.success) {
       setError(parsed.error.issues[0]?.message ?? "Thông tin chưa hợp lệ");
@@ -77,42 +80,34 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
           <p className="mt-1 text-[14px] text-fg-3">
             {signup ? "Lịch, công việc và thống kê của bạn được lưu riêng cho tài khoản này." : "Chào mừng bạn quay lại."}
           </p>
-          <form onSubmit={submit} className="mt-6 flex flex-col gap-4" noValidate>
+          {/* method="post": a submit before JavaScript loads never puts the password in the URL. */}
+          <form onSubmit={submit} method="post" className="mt-6 flex flex-col gap-4" noValidate>
             {signup && (
               <Field label="Tên hiển thị (không bắt buộc)">
-                {(id) => <Input id={id} autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} maxLength={80} />}
+                {(id) => <Input id={id} name="name" autoComplete="name" maxLength={80} />}
               </Field>
             )}
             <Field label="Email">
               {(id) => (
-                <Input
-                  id={id}
-                  type="email"
-                  inputMode="email"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
+                <Input id={id} name="email" type="email" inputMode="email" autoComplete="email" required />
               )}
             </Field>
             <Field label="Mật khẩu" hint={signup ? "Tối thiểu 8 ký tự." : undefined}>
               {(id, d) => (
                 <Input
                   id={id}
+                  name="password"
                   type="password"
                   aria-describedby={d}
                   autoComplete={signup ? "new-password" : "current-password"}
                   required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
                 />
               )}
             </Field>
             {signup && (
               <Field label="Nhập lại mật khẩu">
                 {(id) => (
-                  <Input id={id} type="password" autoComplete="new-password" required value={confirm} onChange={(e) => setConfirm(e.target.value)} />
+                  <Input id={id} name="confirm" type="password" autoComplete="new-password" required />
                 )}
               </Field>
             )}

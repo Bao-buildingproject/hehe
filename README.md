@@ -46,35 +46,51 @@ Toàn bộ quy tắc nằm trong `src/lib/domain/` (TypeScript thuần, không p
 
 ## Chạy trên máy của bạn
 
-Cần **Node.js 20.9+** và **PostgreSQL**. Cách dễ nhất để có PostgreSQL là Docker: `docker compose up -d`.
+Cần cài sẵn **Node.js 22** (https://nodejs.org, bản LTS) và **Docker Desktop** (để có cơ sở dữ liệu PostgreSQL). Nếu đã có PostgreSQL thì không cần Docker.
 
-1. Cài thư viện:
+1. Tải mã nguồn về máy:
+
+   ```bash
+   git clone https://github.com/Bao-buildingproject/hehe.git
+   ```
+
+   ```bash
+   cd hehe
+   ```
+
+2. Cài thư viện:
 
    ```bash
    npm install
    ```
 
-2. Tạo file cấu hình rồi sửa `DATABASE_URL` nếu cần:
+3. Bật cơ sở dữ liệu PostgreSQL (bằng Docker):
+
+   ```bash
+   docker compose up -d
+   ```
+
+4. Tạo file cấu hình. Giá trị mặc định đã khớp với Docker ở bước 3:
 
    ```bash
    cp .env.example .env.local
    ```
 
-3. Tạo bảng trong cơ sở dữ liệu:
+5. Tạo bảng trong cơ sở dữ liệu (lệnh tự đọc `.env.local`):
 
    ```bash
    npm run db:migrate
    ```
 
-   (Lệnh này cần biến `DATABASE_URL` trong môi trường. Next.js tự đọc `.env.local` khi chạy app, còn với lệnh này bạn có thể chạy `export $(cat .env.local | xargs)` trước.)
-
-4. Chạy ứng dụng:
+6. Chạy website:
 
    ```bash
    npm run dev
    ```
 
-5. Mở http://localhost:3000, đăng ký tài khoản và bắt đầu dùng.
+7. Mở trình duyệt vào **http://localhost:3000**, bấm "Đăng ký miễn phí" để tạo tài khoản và bắt đầu dùng.
+
+Muốn chạy bản tối ưu như khi đưa lên mạng: `npm run build` rồi `npm start` (vẫn mở http://localhost:3000).
 
 ## Đưa lên mạng (miễn phí): Vercel + Neon
 
