@@ -23,4 +23,5 @@ jobs:
         env:
           URL: ${{ vars.REMINDERS_URL }}
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
-        run: curl --fail --silent --show-error -X POST -H "Authorization: Bearer $CRON_SECRET" "$URL"
+        run: |
+          curl --fail --silent --show-error -X POST -H "Authorization: Bearer $CRON_SECRET" "$URL"
