@@ -203,17 +203,27 @@ export function DashboardView() {
 
       <div className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
         {[
-          { label: "Đã lên lịch", value: s.stats.scheduled, icon: Clock, tone: "text-fg-3" },
-          { label: "Hoàn thành", value: s.stats.completed, icon: Check, tone: "text-st-done" },
-          { label: "Chưa hoàn thành", value: s.stats.notCompleted, icon: Minus, tone: "text-st-idle" },
-          { label: "Quá hạn", value: s.stats.overdue, icon: CircleAlert, tone: "text-st-overdue" },
+          { label: "Đã lên lịch", value: s.stats.scheduled, note: `trong ${s.stats.activeDays} ngày`, icon: Clock, tone: "text-fg-3" },
+          {
+            label: "Hoàn thành",
+            value: s.stats.completed,
+            // Completions (lần) and days with at least one completion (ngày) are different numbers.
+            note: `lần · ${s.stats.completedDays} ngày có hoàn thành`,
+            icon: Check,
+            tone: "text-st-done",
+          },
+          { label: "Chưa hoàn thành", value: s.stats.notCompleted, note: null, icon: Minus, tone: "text-st-idle" },
+          { label: "Quá hạn", value: s.stats.overdue, note: null, icon: CircleAlert, tone: "text-st-overdue" },
         ].map((k) => (
           <Card key={k.label} className="flex items-center gap-3 px-4 py-3">
-            <k.icon className={cn("size-5", k.tone)} aria-hidden />
-            <div>
+            <k.icon className={cn("size-5 shrink-0", k.tone)} aria-hidden />
+            <div className="min-w-0">
               <p className="text-[12px] text-fg-3">{k.label}</p>
-              <p className="text-[20px] font-semibold leading-tight tabular" data-testid={`kpi-${k.label}`}>
-                {k.value}
+              <p className="flex flex-wrap items-baseline gap-x-1.5 leading-tight">
+                <span className="text-[20px] font-semibold tabular" data-testid={`kpi-${k.label}`}>
+                  {k.value}
+                </span>
+                {k.note && <span className="text-[12px] text-fg-3">{k.note}</span>}
               </p>
             </div>
           </Card>
