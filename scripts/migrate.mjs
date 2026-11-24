@@ -11,7 +11,7 @@ if (!url) {
     process.exit(0);
   }
   console.error(
-    "[migrate] Thiếu DATABASE_URL. Hãy kết nối cơ sở dữ liệu PostgreSQL (xem README, mục Triển khai) " +
+    "[migrate] Thiếu DATABASE_URL. Hãy kết nối cơ sở dữ liệu PostgreSQL (xem README, mục “Đưa lên mạng”) " +
       "hoặc đặt SKIP_DB_MIGRATE=1 nếu chỉ muốn build thử.",
   );
   process.exit(1);

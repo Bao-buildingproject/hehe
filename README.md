@@ -80,10 +80,13 @@ Cần **Node.js 20.9+** và **PostgreSQL**. Cách dễ nhất để có PostgreS
 
 Bạn cần tài khoản [Vercel](https://vercel.com) (đăng nhập bằng GitHub). Cơ sở dữ liệu Neon được tạo ngay trong Vercel.
 
-1. Trên Vercel chọn **Add New → Project**, rồi **Import** repository `hehe`.
-2. Đừng bấm Deploy vội. Vào tab **Storage → Create Database**, chọn **Neon (Postgres)**, đặt tên rồi **Connect** với project. Vercel sẽ tự thêm biến `DATABASE_URL` (và `DATABASE_URL_UNPOOLED`) cho cả Production và Preview.
-3. Bấm **Deploy**. Lệnh `npm run build` sẽ tự tạo hoặc cập nhật bảng (migration) trước khi build.
-4. Mở địa chỉ `https://<tên-project>.vercel.app`, đăng ký tài khoản và dùng.
+1. Vào https://vercel.com/new, đăng nhập bằng GitHub. Ở mục **Import Git Repository**, chọn repository `hehe` rồi bấm **Import**. Nếu không thấy repo, bấm **Adjust GitHub App Permissions** để cấp quyền cho repo này.
+2. Giữ nguyên các thiết lập và bấm **Deploy**. Lần đầu sẽ **báo lỗi "Thiếu DATABASE_URL"**: đây là chuyện bình thường, vì chưa có cơ sở dữ liệu.
+3. Mở project vừa tạo, vào tab **Storage**, bấm **Create Database**, chọn **Neon** rồi **Continue**. Ở mục khu vực (region) chọn **Singapore**, bấm **Create**, sau đó **Connect** với project (để mặc định cho mọi môi trường). Vercel sẽ tự thêm biến `DATABASE_URL`.
+4. Vào tab **Deployments**, bấm **⋯** ở bản mới nhất, chọn **Redeploy**. Lần này lệnh build tự tạo bảng dữ liệu (migration) và sẽ thành công.
+5. Bấm **Visit** (địa chỉ dạng `https://<tên-project>.vercel.app`), đăng ký tài khoản và bắt đầu dùng.
+
+Máy chủ được cấu hình chạy ở Singapore (`vercel.json`), gần Việt Nam và cùng khu vực với cơ sở dữ liệu nên phản hồi nhanh.
 
 Nếu dùng **Supabase** thay cho Neon: tạo project, vào **Connect → Transaction pooler**, sao chép chuỗi kết nối và dán vào biến `DATABASE_URL` trong **Vercel → Settings → Environment Variables**, rồi Redeploy.
 
